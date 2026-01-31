@@ -1,63 +1,164 @@
 # Adaptive Test Orchestration (ATO)
 
-Adaptive Test Orchestration is a policy-governed system designed to evaluate security posture through controlled, auditable execution of approved tests.
+Adaptive Test Orchestration (ATO) is a system designed to **validate whether proof-of-concept automated exploitation code continues to function once real, commercial-grade software and security standards are applied**.
 
-Recent demonstrations of automated or AI-assisted exploitation highlight how quickly known techniques can be chained when guardrails are absent. In practice, these demonstrations rely on constrained environments, local execution context, and pre-existing access rather than autonomous, general-purpose exploitation.
+Recent demonstrations of automated or AI-assisted exploitation—such as so-called “one-click RCE” workflows or “AI agents that can hack”—show how quickly known techniques can be chained **when guardrails are absent**. In practice, these demonstrations almost always rely on assumptions that do not hold in real enterprises, including local execution context, implicit authorization, permissive runtime environments, unlimited retries, and incomplete documentation.
 
-ATO is intentionally designed to operate in the opposite direction: bounded by explicit policy, limited by global execution controls, and fully observable at every step. The goal is not autonomous exploitation, but disciplined, repeatable testing that reflects real-world constraints and enterprise authorization requirements.
+ATO exists to remove those assumptions.
 
-![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Status](https://img.shields.io/badge/status-active%20development-yellow.svg)
+ATO intentionally applies **commercial QA guardrails** to proof-of-concept automation and observes what still works once those guardrails are enforced.
+
+**ATO applies commercial QA standards—scope control, bounded execution, reproducibility, and full documentation—to proof-of-concept automated exploitation workflows to determine whether they remain functional under real-world constraints.**
+
+---
+
+## What the statement above means (explicitly explained)
+
+This section exists so that **nothing is implicit and nothing is left to interpretation**.
+
+- **Commercial QA standards**  
+  The same expectations used for software that is actually deployed, supported, and audited:
+  - explicit inputs and configuration  
+  - predictable execution behavior  
+  - bounded runtime and resource usage  
+  - documented assumptions and limitations  
+  - reviewable and reproducible output  
+
+- **Scope control**  
+  The automation must be told exactly:
+  - which target it is allowed to interact with  
+  - which protocols it may use  
+  - which actions are permitted  
+  Nothing happens implicitly or “because the environment allows it”.
+
+- **Bounded execution**  
+  The automation cannot:
+  - run indefinitely  
+  - retry endlessly  
+  - escalate activity quietly  
+  Hard global limits define how much work is allowed in a single run.
+
+- **Reproducibility**  
+  Given the same inputs, configuration, and code version, behavior is repeatable.  
+  Results can be rerun, reviewed, and independently verified.
+
+- **Full documentation**  
+  Behavior, limits, assumptions, and failure conditions are written down.  
+  If something cannot be documented clearly, it is not considered acceptable.
+
+- **Proof-of-concept automated exploitation workflows**  
+  Code written to demonstrate automated attack chaining, decision logic, or orchestration.  
+  Often impressive in demos, but rarely hardened for enterprise conditions.
+
+- **Determine whether they remain functional**  
+  ATO does not attempt to “make attacks succeed”.  
+  It observes what still works once constraints are applied.
+
+- **Real-world constraints**  
+  Conditions that exist in actual enterprises:
+  authorization, rate limits, auditability, accountability, operational visibility, and change control.
 
 ---
 
 ## ✨ Capabilities
 
-- 🔒 **Policy Enforcement**
-  - Execution requires an explicit policy file; ATO will not run without one.
-  - Policies define:
-    - Allowed hosts or domains
-    - Allowed schemes (`http`, `https`)
-    - Permitted HTTP methods
-    - Allowed URL path prefixes
-    - Maximum total request count for the entire run
-    - Maximum global request rate across all modules
-  - Policy checks are enforced before **every** request.
-  - Any policy violation immediately halts execution and is recorded as evidence.
+### 🔒 Commercial Guardrails Applied
 
-- 🔁 **Test Orchestration**
-  - Test modules execute in a deterministic, centrally controlled sequence.
-  - Modules cannot expand scope, trigger other modules, or bypass limits.
-  - Execution flow is decided exclusively by the orchestrator based on observed results.
+ATO applies **engineering discipline**, not exploit coverage.
 
-- 🧾 **Evidence Collection**
-  - Every request and response is captured in full.
-  - Evidence includes timestamps, module attribution, request details, and response details.
-  - Evidence is written during execution, not reconstructed post-run.
+- **Explicit scope declaration**
+  - A target base URL must be provided
+  - Execution is bound to that target
+  - No discovery beyond declared scope
 
-- ♻️ **Reproducibility**
-  - Identical inputs (policy, target, version) produce identical execution behavior.
-  - Enables audit, validation, regression testing, and peer review.
+- **Global execution limits**
+  - One request budget shared across all modules
+  - One rate limit shared across all modules
+  - No per-module bypassing of limits
+
+- **Centralized orchestration**
+  - All execution is controlled by a single orchestrator
+  - Modules cannot trigger other modules
+  - Modules cannot expand scope
+
+- **Deterministic stop conditions**
+  - Execution stops when limits are reached
+  - Execution stops on explicit errors
+  - Stop conditions are intentional and recorded
+
+These guardrails exist to answer one question:
+
+> *Does this automation still work once it is treated like real software?*
+
+---
+
+### 🔁 Orchestration and Sequencing
+
+ATO executes approved modules **one at a time**.
+
+- Each module:
+  - receives a constrained execution context  
+  - performs only its explicitly defined behavior  
+  - returns structured results  
+
+- The orchestrator:
+  - controls execution order  
+  - decides whether execution continues  
+  - enforces global limits  
+
+There is no autonomous branching, speculative behavior, or hidden retries.
+
+---
+
+### 🧾 Evidence and Observability
+
+ATO records **everything it does**.
+
+For each request:
+- timestamp  
+- executing module  
+- HTTP method and URL  
+- request data (where applicable)  
+- response status and content  
+
+Evidence is written **during execution**, not reconstructed later.
+
+This enables:
+- audit and review  
+- debugging and failure analysis  
+- QA validation  
+- third-party verification  
+
+---
+
+### ♻️ Reproducibility and Review
+
+ATO is designed to be rerun.
+
+Given the same:
+- code version  
+- configuration  
+- target  
+
+The system behaves the same way.
+
+This allows proof-of-concept automation to be evaluated the same way production software is evaluated: by rerunning it and inspecting the results.
 
 ---
 
 ## 📁 Repository Structure
 
     ato/
-      pyproject.toml
-      README.md
+      pyproject.toml        Project metadata and dependencies
+      README.md             Documentation
       ato/
-        __init__.py
-        cli.py
-        policy.py
-        budget.py
-        evidence.py
-        orchestrator.py
-        http_client.py
+        cli.py              Command-line interface
+        orchestrator.py     Central execution control
+        http_client.py      Shared HTTP client
+        budget.py           Global budgeting and rate limiting
+        evidence.py         Evidence capture
         modules/
-          __init__.py
-          base.py
+          base.py            Module interface
           http_basic_probe.py
           headers_checks.py
       policies/
@@ -67,86 +168,73 @@ ATO is intentionally designed to operate in the opposite direction: bounded by e
 
 ---
 
-## 🧩 Python Libraries
+## 🧩 Python Dependencies
 
 All dependencies are declared explicitly in `pyproject.toml`.
 
-- **requests**
-  - Used for all HTTP and HTTPS request execution.
-- **PyYAML**
-  - Used to load and validate YAML policy configuration files.
+- **requests**  
+  Used for HTTP and HTTPS request execution.
 
-No dynamic or implicit dependency loading occurs at runtime.
+- **PyYAML**  
+  Used for configuration parsing.
+
+No dynamic dependency loading occurs at runtime.
 
 ---
 
 ## 📦 Installation
 
-Follow all steps exactly as written. Do not skip steps.
+This installation process mirrors **commercial engineering standards**.  
+Follow every step exactly. Do not skip steps.
 
 ### 1) Verify Python Version
 
-ATO requires **Python 3.10 or newer**.
+ATO requires Python **3.10 or newer**.
 
     python --version
     python3 --version
-
-The reported version must be 3.10 or higher before proceeding.
 
 ---
 
 ### 2) Verify pip
 
-Ensure `pip` is available and bound to the same Python interpreter.
-
     pip --version
 
-Fix pip before continuing if this command fails.
+Ensure pip is bound to the same Python interpreter.
 
 ---
 
 ### 3) Confirm Repository Root
 
-All installation commands must be run from the directory containing `pyproject.toml`.
-
     ls pyproject.toml
-
-Do not proceed if the file is not present.
 
 ---
 
-### 4) Create a Virtual Environment
+### 4) Create Virtual Environment
 
     python -m venv .venv
 
-This creates an isolated environment in `.venv/`.
-
 ---
 
-### 5) Activate the Virtual Environment
+### 5) Activate Environment
 
 Linux / macOS:
 
     source .venv/bin/activate
 
-Windows (PowerShell):
+Windows:
 
     .venv\Scripts\Activate.ps1
 
 Verify:
 
     python --version
-    which python
-    where python
-
-The path must reference `.venv`.
 
 ---
 
-### 6) Upgrade Packaging Tools
+### 6) Upgrade Toolchain
 
     pip install --upgrade pip setuptools wheel
-    pip --version
 
 ---
 
@@ -154,19 +242,15 @@ The path must reference `.venv`.
 
     pip install .
 
-This installs all dependencies, builds the package, and registers the `ato` CLI.
-
 ---
 
 ### 8) Verify Installation
 
     ato --help
 
-Help output must display without error.
-
 ---
 
-### 9) Editable Installation (Development Only)
+### 9) Editable Install (Development Only)
 
     pip install -e .
     ato --help
@@ -175,46 +259,82 @@ Help output must display without error.
 
 ## ▶️ Usage
 
-### Basic Execution
+### Example Run
 
     ato --base-url https://app.example.com \
         --policy policies/example_policy.yaml \
         --run-dir runs/example
 
-- `--base-url` defines the target system.
-- `--policy` defines scope and execution limits.
-- `--run-dir` defines where evidence and results are written.
+- `--base-url`: target under test  
+- `--policy`: execution boundaries and limits  
+- `--run-dir`: artifact storage  
 
 ---
 
 ### Output Artifacts
 
-Each run directory contains:
+Each run produces:
 
     evidence.jsonl
     results.json
 
-- `evidence.jsonl` contains full request/response evidence.
-- `results.json` contains structured execution outcomes.
+- `evidence.jsonl`: raw request/response evidence  
+- `results.json`: structured execution outcomes  
 
 ---
 
-## 🔗 References & Context
+## 🔗 References and Validation Context
 
-The following references provide context for the automation and AI-assisted exploitation claims that ATO intentionally approaches with explicit controls and auditability:
+The references below are included to make the problem space explicit and auditable.
 
-- https://ethiack.com/news/blog/one-click-rce-moltbot
-- https://blog.ethiack.com/blog/introducing-the-hackian-an-ai-agent-that-can-hack
-- https://ethiack.com/research
-- https://ethiack.com/blog
-- https://www.darkreading.com/attacks-breaches
-- https://www.sans.org/blog
-- https://owasp.org/www-project-top-ten/
-- https://www.nist.gov/cyberframework
-- https://www.blackhat.com
-- https://www.acm.org/code-of-ethics
+They describe the class of proof-of-concept automation and claims that ATO is designed to validate under commercial QA guardrails.
 
-These references are provided for technical grounding and comparison only.
+### Automated / AI-Assisted Exploitation Claims
+
+- Ethiack – MoltBot “One-Click RCE”  
+  https://ethiack.com/news/blog/one-click-rce-moltbot
+
+- Ethiack – Hackian: An AI Agent That Can Hack  
+  https://blog.ethiack.com/blog/introducing-the-hackian-an-ai-agent-that-can-hack
+
+- Ethiack Research Blog  
+  https://ethiack.com/blog
+
+These demonstrations typically assume:
+- local execution context  
+- implicit authorization  
+- permissive runtime environments  
+- limited operational constraints  
+
+ATO exists to test whether those assumptions survive commercial QA standards.
+
+---
+
+### Security Engineering and Industry Context
+
+- OWASP Top Ten  
+  https://owasp.org/www-project-top-ten/
+
+- NIST Cybersecurity Framework  
+  https://www.nist.gov/cyberframework
+
+- SANS Institute Research  
+  https://www.sans.org/blog
+
+- Dark Reading – Enterprise Security Analysis  
+  https://www.darkreading.com/attacks-breaches
+
+---
+
+### Research Ethics and Responsible Engineering
+
+- ACM Code of Ethics  
+  https://www.acm.org/code-of-ethics
+
+- Black Hat Conference Archives  
+  https://www.blackhat.com
+
+These references reinforce that automation claims must be testable, observable, documented, and reviewable.
 
 ---
 
@@ -222,11 +342,10 @@ These references are provided for technical grounding and comparison only.
 
 ATO is under active development.
 
-Current functionality includes:
-- Explicit policy enforcement
-- Global request budgeting and rate limiting
-- Deterministic test orchestration
-- Full evidence capture
+Current focus:
+- applying commercial QA guardrails  
+- documenting assumptions explicitly  
+- validating proof-of-concept automation behavior  
 
 ---
 
