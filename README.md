@@ -1,62 +1,35 @@
-# Adaptive Test Orchestration (ATO)
+# 🧪 Adaptive Test Orchestration (ATO)
 
-Adaptive Test Orchestration (ATO) is a system designed to **validate whether proof-of-concept automated exploitation code continues to function once real, commercial-grade software and security standards are applied**.
+Adaptive Test Orchestration (ATO) is a system used to validate whether proof-of-concept automated exploitation workflows continue to function once real, commercial-grade software and security standards are applied.
 
-Recent demonstrations of automated or AI-assisted exploitation—such as so-called “one-click RCE” workflows or “AI agents that can hack”—show how quickly known techniques can be chained **when guardrails are absent**. In practice, these demonstrations almost always rely on assumptions that do not hold in real enterprises, including local execution context, implicit authorization, permissive runtime environments, unlimited retries, and incomplete documentation.
+Recent demonstrations of automated or AI-assisted exploitation—such as “one-click RCE” workflows or “AI agents that can hack”—show how quickly known techniques can be chained when guardrails are absent. In practice, these demonstrations usually rely on assumptions that do not hold in real enterprise environments, including trusted local execution, implicit authorization, unlimited retries, permissive networking, and incomplete documentation.
 
 ATO exists to remove those assumptions.
 
-ATO intentionally applies **commercial QA guardrails** to proof-of-concept automation and observes what still works once those guardrails are enforced.
+ATO forces proof-of-concept automation to operate under the same conditions required of real software: explicit scope, bounded execution, centralized control, full observability, and complete documentation. The system does not attempt to improve or enhance exploitation techniques. It observes what still works once commercial constraints are enforced.
 
 **ATO applies commercial QA standards—scope control, bounded execution, reproducibility, and full documentation—to proof-of-concept automated exploitation workflows to determine whether they remain functional under real-world constraints.**
 
+![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Status](https://img.shields.io/badge/status-active%20development-yellow.svg)
+
 ---
 
-## What the statement above means (explicitly explained)
+## 🎯 Purpose and Scope
 
-This section exists so that **nothing is implicit and nothing is left to interpretation**.
+ATO is **not**:
+- an exploit framework  
+- an attack toolkit  
+- an autonomous “AI hacking agent”  
 
-- **Commercial QA standards**  
-  The same expectations used for software that is actually deployed, supported, and audited:
-  - explicit inputs and configuration  
-  - predictable execution behavior  
-  - bounded runtime and resource usage  
-  - documented assumptions and limitations  
-  - reviewable and reproducible output  
+ATO **is** a validation harness.
 
-- **Scope control**  
-  The automation must be told exactly:
-  - which target it is allowed to interact with  
-  - which protocols it may use  
-  - which actions are permitted  
-  Nothing happens implicitly or “because the environment allows it”.
+It is used to answer a single question:
 
-- **Bounded execution**  
-  The automation cannot:
-  - run indefinitely  
-  - retry endlessly  
-  - escalate activity quietly  
-  Hard global limits define how much work is allowed in a single run.
+> Does this automation still work when it is treated like real software that must meet enterprise engineering and QA standards?
 
-- **Reproducibility**  
-  Given the same inputs, configuration, and code version, behavior is repeatable.  
-  Results can be rerun, reviewed, and independently verified.
-
-- **Full documentation**  
-  Behavior, limits, assumptions, and failure conditions are written down.  
-  If something cannot be documented clearly, it is not considered acceptable.
-
-- **Proof-of-concept automated exploitation workflows**  
-  Code written to demonstrate automated attack chaining, decision logic, or orchestration.  
-  Often impressive in demos, but rarely hardened for enterprise conditions.
-
-- **Determine whether they remain functional**  
-  ATO does not attempt to “make attacks succeed”.  
-  It observes what still works once constraints are applied.
-
-- **Real-world constraints**  
-  Conditions that exist in actual enterprises:
-  authorization, rate limits, auditability, accountability, operational visibility, and change control.
+Failures under these constraints are expected outcomes, not errors.
 
 ---
 
@@ -64,47 +37,45 @@ This section exists so that **nothing is implicit and nothing is left to interpr
 
 ### 🔒 Commercial Guardrails Applied
 
-ATO applies **engineering discipline**, not exploit coverage.
+ATO enforces the same constraints expected of production-grade software.
 
-- **Explicit scope declaration**
-  - A target base URL must be provided
-  - Execution is bound to that target
-  - No discovery beyond declared scope
+- **Explicit scope**
+  - A target base URL must be declared
+  - Execution is limited to that target
+  - No implicit discovery or environment-driven expansion
 
-- **Global execution limits**
-  - One request budget shared across all modules
-  - One rate limit shared across all modules
-  - No per-module bypassing of limits
+- **Bounded execution**
+  - A single global request budget applies to the entire run
+  - A single global rate limit applies across all modules
+  - The system cannot retry endlessly or escalate activity silently
 
 - **Centralized orchestration**
   - All execution is controlled by a single orchestrator
   - Modules cannot trigger other modules
-  - Modules cannot expand scope
+  - Modules cannot expand scope or bypass limits
 
-- **Deterministic stop conditions**
+- **Deterministic stopping behavior**
   - Execution stops when limits are reached
   - Execution stops on explicit errors
   - Stop conditions are intentional and recorded
 
-These guardrails exist to answer one question:
-
-> *Does this automation still work once it is treated like real software?*
+These guardrails exist to determine whether automation survives real operational constraints.
 
 ---
 
-### 🔁 Orchestration and Sequencing
+### 🔁 Orchestration and Execution Model
 
-ATO executes approved modules **one at a time**.
+ATO executes approved test modules **one at a time**.
 
-- Each module:
-  - receives a constrained execution context  
-  - performs only its explicitly defined behavior  
-  - returns structured results  
+Each module:
+- receives a constrained execution context
+- performs only its defined behavior
+- returns structured results
 
-- The orchestrator:
-  - controls execution order  
-  - decides whether execution continues  
-  - enforces global limits  
+The orchestrator:
+- controls execution order
+- enforces shared limits
+- decides whether execution continues
 
 There is no autonomous branching, speculative behavior, or hidden retries.
 
@@ -112,37 +83,35 @@ There is no autonomous branching, speculative behavior, or hidden retries.
 
 ### 🧾 Evidence and Observability
 
-ATO records **everything it does**.
+ATO records all activity as it occurs.
 
-For each request:
-- timestamp  
-- executing module  
-- HTTP method and URL  
-- request data (where applicable)  
-- response status and content  
+For each request, the system captures:
+- timestamp
+- executing module
+- HTTP method and URL
+- request data (when applicable)
+- response status and content
 
-Evidence is written **during execution**, not reconstructed later.
+Evidence is written during execution, not reconstructed later.
 
 This enables:
-- audit and review  
-- debugging and failure analysis  
-- QA validation  
-- third-party verification  
+- audit and review
+- QA validation
+- failure analysis
+- independent verification
 
 ---
 
-### ♻️ Reproducibility and Review
-
-ATO is designed to be rerun.
+### ♻️ Reproducibility
 
 Given the same:
-- code version  
-- configuration  
-- target  
+- code version
+- configuration
+- target
 
-The system behaves the same way.
+ATO behaves the same way.
 
-This allows proof-of-concept automation to be evaluated the same way production software is evaluated: by rerunning it and inspecting the results.
+This allows proof-of-concept automation to be evaluated using the same standards applied to production software: repeatable runs and inspectable results.
 
 ---
 
@@ -154,7 +123,7 @@ This allows proof-of-concept automation to be evaluated the same way production 
       ato/
         cli.py              Command-line interface
         orchestrator.py     Central execution control
-        http_client.py      Shared HTTP client
+        http_client.py      Shared HTTP execution layer
         budget.py           Global budgeting and rate limiting
         evidence.py         Evidence capture
         modules/
@@ -168,7 +137,7 @@ This allows proof-of-concept automation to be evaluated the same way production 
 
 ---
 
-## 🧩 Python Dependencies
+## 🧩 Dependencies
 
 All dependencies are declared explicitly in `pyproject.toml`.
 
@@ -178,118 +147,94 @@ All dependencies are declared explicitly in `pyproject.toml`.
 - **PyYAML**  
   Used for configuration parsing.
 
-No dynamic dependency loading occurs at runtime.
+No dynamic or implicit dependency loading occurs at runtime.
 
 ---
 
 ## 📦 Installation
 
-This installation process mirrors **commercial engineering standards**.  
-Follow every step exactly. Do not skip steps.
+These steps reflect commercial engineering standards.  
+Follow them exactly. Do not skip steps.
 
-### 1) Verify Python Version
+1. **Verify Python version**
 
-ATO requires Python **3.10 or newer**.
+       python --version
+       python3 --version
 
-    python --version
-    python3 --version
+   Python **3.10+** is required.
 
----
+2. **Verify pip**
 
-### 2) Verify pip
+       pip --version
 
-    pip --version
+3. **Confirm repository root**
 
-Ensure pip is bound to the same Python interpreter.
+       ls pyproject.toml
 
----
+4. **Create a virtual environment**
 
-### 3) Confirm Repository Root
+       python -m venv .venv
 
-    ls pyproject.toml
+5. **Activate the environment**
 
----
+   Linux / macOS:
 
-### 4) Create Virtual Environment
+       source .venv/bin/activate
 
-    python -m venv .venv
+   Windows:
 
----
+       .venv\Scripts\Activate.ps1
 
-### 5) Activate Environment
+6. **Upgrade packaging tools**
 
-Linux / macOS:
+       pip install --upgrade pip setuptools wheel
 
-    source .venv/bin/activate
+7. **Install ATO**
 
-Windows:
+       pip install .
 
-    .venv\Scripts\Activate.ps1
+8. **Verify installation**
 
-Verify:
+       ato --help
 
-    python --version
+9. **Editable install (development only)**
 
----
-
-### 6) Upgrade Toolchain
-
-    pip install --upgrade pip setuptools wheel
-
----
-
-### 7) Install ATO
-
-    pip install .
-
----
-
-### 8) Verify Installation
-
-    ato --help
-
----
-
-### 9) Editable Install (Development Only)
-
-    pip install -e .
-    ato --help
+       pip install -e .
+       ato --help
 
 ---
 
 ## ▶️ Usage
 
-### Example Run
+Example execution:
 
     ato --base-url https://app.example.com \
         --policy policies/example_policy.yaml \
         --run-dir runs/example
 
-- `--base-url`: target under test  
-- `--policy`: execution boundaries and limits  
-- `--run-dir`: artifact storage  
+- `--base-url` specifies the target under test
+- `--policy` defines execution boundaries and limits
+- `--run-dir` stores all output artifacts
 
 ---
 
-### Output Artifacts
+## 📂 Output Artifacts
 
 Each run produces:
 
     evidence.jsonl
     results.json
 
-- `evidence.jsonl`: raw request/response evidence  
-- `results.json`: structured execution outcomes  
+- `evidence.jsonl` contains raw request and response evidence
+- `results.json` contains structured execution outcomes
 
 ---
 
 ## 🔗 References and Validation Context
 
-The references below are included to make the problem space explicit and auditable.
+The references below describe the class of proof-of-concept automation ATO is designed to evaluate.
 
-They describe the class of proof-of-concept automation and claims that ATO is designed to validate under commercial QA guardrails.
-
-### Automated / AI-Assisted Exploitation Claims
+### 🤖 Automated / AI-Assisted Exploitation
 
 - Ethiack – MoltBot “One-Click RCE”  
   https://ethiack.com/news/blog/one-click-rce-moltbot
@@ -300,17 +245,12 @@ They describe the class of proof-of-concept automation and claims that ATO is de
 - Ethiack Research Blog  
   https://ethiack.com/blog
 
-These demonstrations typically assume:
-- local execution context  
-- implicit authorization  
-- permissive runtime environments  
-- limited operational constraints  
-
-ATO exists to test whether those assumptions survive commercial QA standards.
+These demonstrations typically assume trusted execution environments and minimal constraints.  
+ATO evaluates what remains once those assumptions are removed.
 
 ---
 
-### Security Engineering and Industry Context
+### 🛡️ Security Engineering Context
 
 - OWASP Top Ten  
   https://owasp.org/www-project-top-ten/
@@ -321,20 +261,18 @@ ATO exists to test whether those assumptions survive commercial QA standards.
 - SANS Institute Research  
   https://www.sans.org/blog
 
-- Dark Reading – Enterprise Security Analysis  
+- Dark Reading  
   https://www.darkreading.com/attacks-breaches
 
 ---
 
-### Research Ethics and Responsible Engineering
+### ⚖️ Responsible Engineering and Research
 
 - ACM Code of Ethics  
   https://www.acm.org/code-of-ethics
 
 - Black Hat Conference Archives  
   https://www.blackhat.com
-
-These references reinforce that automation claims must be testable, observable, documented, and reviewable.
 
 ---
 
@@ -343,9 +281,9 @@ These references reinforce that automation claims must be testable, observable, 
 ATO is under active development.
 
 Current focus:
-- applying commercial QA guardrails  
-- documenting assumptions explicitly  
-- validating proof-of-concept automation behavior  
+- applying commercial QA guardrails
+- documenting assumptions explicitly
+- validating proof-of-concept automation behavior
 
 ---
 
