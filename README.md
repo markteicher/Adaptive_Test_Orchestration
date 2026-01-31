@@ -6,7 +6,7 @@ In recent years, multiple demonstrations have claimed that automated tools or �
 
 ATO exists specifically to remove those assumptions.
 
-ATO does not attempt to invent new exploitation techniques. It does not attempt to “outperform” existing tools. Instead, it takes existing proof-of-concept automation and forces it to operate under the same rules that real, deployed software must follow.
+ATO does not attempt to invent new exploitation techniques or improve attack success rates. Instead, it takes existing proof-of-concept automation and forces it to operate under the same rules that real, deployed software must follow.
 
 **ATO applies commercial QA standards—scope control, bounded execution, reproducibility, and full documentation—to proof-of-concept automated exploitation workflows to determine whether they remain functional under real-world constraints.**
 
@@ -18,17 +18,11 @@ ATO does not attempt to invent new exploitation techniques. It does not attempt 
 
 ## 🎯 Purpose and Scope
 
-ATO is not an exploit framework.  
-ATO is not an attack toolkit.  
-ATO is not an autonomous “AI hacking agent”.
-
-ATO is a **validation system**.
-
-Its role is to answer a single, practical question:
+ATO is used to answer a single, practical question:
 
 > Does this automated workflow still function when it must behave like real software operating inside a real enterprise?
 
-If automation fails under these conditions, that failure is not an error. It is the result.
+When automation fails under these conditions, that failure is an expected and meaningful result.
 
 ---
 
@@ -37,8 +31,6 @@ If automation fails under these conditions, that failure is not an error. It is 
 ### 🔒 Commercial Guardrails Applied
 
 ATO applies the same constraints expected of production-grade software.
-
-These guardrails exist to eliminate hidden assumptions.
 
 - **Explicit scope**
   - A target base URL must be provided.
@@ -60,13 +52,13 @@ These guardrails exist to eliminate hidden assumptions.
   - Execution stops on explicit errors.
   - Stop conditions are deliberate and recorded.
 
-These guardrails are not features. They are test conditions.
+These guardrails exist to eliminate hidden assumptions and validate automation under real operational constraints.
 
 ---
 
 ### 🔁 Orchestration and Execution Model
 
-ATO executes test modules sequentially.
+ATO executes approved test modules sequentially.
 
 Each module:
 - receives a constrained execution context
@@ -78,13 +70,13 @@ The orchestrator:
 - enforces shared limits
 - decides whether execution continues
 
-There is no autonomous branching, speculation, or hidden retry logic.
+There is no autonomous branching, speculative behavior, or hidden retry logic.
 
 ---
 
 ### 🧾 Evidence and Observability
 
-ATO records everything it does.
+ATO records all activity as it occurs.
 
 For every request, the system captures:
 - the time the request occurred
@@ -93,7 +85,7 @@ For every request, the system captures:
 - request data when present
 - the full response returned
 
-Evidence is written as execution happens, not reconstructed later.
+Evidence is written during execution, not reconstructed later.
 
 This ensures all behavior can be reviewed, audited, and verified.
 
@@ -152,15 +144,14 @@ No hidden or runtime-loaded dependencies are used.
 
 ## 📦 Installation
 
-These steps reflect real-world engineering standards.  
-They must be followed exactly.
+These steps reflect real-world engineering standards and must be followed exactly.
 
 1. **Verify Python version**
 
-   Python 3.10 or newer is required.
-
        python --version
        python3 --version
+
+   Python 3.10 or newer is required.
 
 2. **Verify pip**
 
@@ -231,7 +222,7 @@ Each run produces:
 
 ## 🔗 References and Validation Context
 
-The references below describe the class of proof-of-concept automation that ATO evaluates.
+The references below describe the class of proof-of-concept automation ATO is designed to evaluate.
 
 ### 🤖 Automated / AI-Assisted Exploitation
 
