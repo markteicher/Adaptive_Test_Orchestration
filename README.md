@@ -1,6 +1,10 @@
 # Adaptive Test Orchestration (ATO)
 
-Adaptive Test Orchestration is a policy-governed system that sequences approved security tests based on observed results and evidence, without autonomous exploit generation.
+Adaptive Test Orchestration is a policy-governed system designed to evaluate security posture through controlled, auditable execution of approved tests.
+
+Recent demonstrations of automated or AI-assisted exploitation highlight how quickly known techniques can be chained when guardrails are absent. In practice, these demonstrations rely on constrained environments, local execution context, and pre-existing access rather than autonomous, general-purpose exploitation.
+
+ATO is intentionally designed to operate in the opposite direction: bounded by explicit policy, limited by global execution controls, and fully observable at every step. The goal is not autonomous exploitation, but disciplined, repeatable testing that reflects real-world constraints and enterprise authorization requirements.
 
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -11,24 +15,30 @@ Adaptive Test Orchestration is a policy-governed system that sequences approved 
 ## ✨ Capabilities
 
 - 🔒 **Policy Enforcement**
-  - Requires an explicit policy file for execution
-  - Enforces allowed hosts, schemes, HTTP methods, and path prefixes
-  - Enforces global request budgets and rate limiting
-  - Stops execution when policy boundaries are violated
+  - Execution requires an explicit policy file; ATO will not run without one.
+  - Policies define:
+    - Allowed hosts or domains
+    - Allowed schemes (`http`, `https`)
+    - Permitted HTTP methods
+    - Allowed URL path prefixes
+    - Maximum total request count for the entire run
+    - Maximum global request rate across all modules
+  - Policy checks are enforced before **every** request.
+  - Any policy violation immediately halts execution and is recorded as evidence.
 
 - 🔁 **Test Orchestration**
-  - Executes approved test modules in a controlled sequence
-  - Uses observed results to determine which approved module runs next
-  - Centralizes orchestration logic (modules do not self-expand scope)
+  - Test modules execute in a deterministic, centrally controlled sequence.
+  - Modules cannot expand scope, trigger other modules, or bypass limits.
+  - Execution flow is decided exclusively by the orchestrator based on observed results.
 
 - 🧾 **Evidence Collection**
-  - Captures request and response evidence for executed tests
-  - Timestamps and associates evidence with the responsible module
-  - Writes run artifacts to the specified output directory
+  - Every request and response is captured in full.
+  - Evidence includes timestamps, module attribution, request details, and response details.
+  - Evidence is written during execution, not reconstructed post-run.
 
 - ♻️ **Reproducibility**
-  - Deterministic behavior given the same inputs (policy, target, version)
-  - Consistent boundaries, request limits, and execution flow per run
+  - Identical inputs (policy, target, version) produce identical execution behavior.
+  - Enables audit, validation, regression testing, and peer review.
 
 ---
 
@@ -59,56 +69,53 @@ Adaptive Test Orchestration is a policy-governed system that sequences approved 
 
 ## 🧩 Python Libraries
 
-ATO installs dependencies from `pyproject.toml`. Key runtime libraries include:
+All dependencies are declared explicitly in `pyproject.toml`.
 
 - **requests**
-  - Used for HTTP/HTTPS request execution inside approved test modules
+  - Used for all HTTP and HTTPS request execution.
 - **PyYAML**
-  - Used to load and validate YAML policy files
+  - Used to load and validate YAML policy configuration files.
+
+No dynamic or implicit dependency loading occurs at runtime.
 
 ---
 
 ## 📦 Installation
 
-Follow these steps in order. Do not skip steps.
+Follow all steps exactly as written. Do not skip steps.
 
-### 1) Verify Python Version (Required)
+### 1) Verify Python Version
 
-ATO requires Python **3.10+**.
-
-Run:
+ATO requires **Python 3.10 or newer**.
 
     python --version
-
-If multiple Python versions are installed, also run:
-
     python3 --version
 
-If the version is below 3.10, install/activate a supported Python version before continuing.
+The reported version must be 3.10 or higher before proceeding.
 
 ---
 
-### 2) Verify pip (Required)
+### 2) Verify pip
 
-Run:
+Ensure `pip` is available and bound to the same Python interpreter.
 
     pip --version
 
-If this fails, fix pip for your active Python installation before continuing.
+Fix pip before continuing if this command fails.
 
 ---
 
-### 3) Confirm Repository Root (Required)
+### 3) Confirm Repository Root
 
-All install commands must be run from the directory that contains `pyproject.toml`.
+All installation commands must be run from the directory containing `pyproject.toml`.
 
-Confirm `pyproject.toml` exists in your current working directory before proceeding.
+    ls pyproject.toml
+
+Do not proceed if the file is not present.
 
 ---
 
-### 4) Create a Virtual Environment (Required)
-
-From the repository root:
+### 4) Create a Virtual Environment
 
     python -m venv .venv
 
@@ -116,7 +123,7 @@ This creates an isolated environment in `.venv/`.
 
 ---
 
-### 5) Activate the Virtual Environment (Required)
+### 5) Activate the Virtual Environment
 
 Linux / macOS:
 
@@ -126,26 +133,103 @@ Windows (PowerShell):
 
     .venv\Scripts\Activate.ps1
 
-Verify that the active Python belongs to the virtual environment:
+Verify:
 
     python --version
-
-(Optional verification)
-
-Linux / macOS:
-
     which python
-
-Windows:
-
     where python
 
-The path should reference `.venv`.
+The path must reference `.venv`.
 
 ---
 
-### 6) Upgrade Packaging Tools (Required)
+### 6) Upgrade Packaging Tools
 
-Inside the activated virtual environment:
+    pip install --upgrade pip setuptools wheel
+    pip --version
 
-    pip install --upgrade
+---
+
+### 7) Install ATO
+
+    pip install .
+
+This installs all dependencies, builds the package, and registers the `ato` CLI.
+
+---
+
+### 8) Verify Installation
+
+    ato --help
+
+Help output must display without error.
+
+---
+
+### 9) Editable Installation (Development Only)
+
+    pip install -e .
+    ato --help
+
+---
+
+## ▶️ Usage
+
+### Basic Execution
+
+    ato --base-url https://app.example.com \
+        --policy policies/example_policy.yaml \
+        --run-dir runs/example
+
+- `--base-url` defines the target system.
+- `--policy` defines scope and execution limits.
+- `--run-dir` defines where evidence and results are written.
+
+---
+
+### Output Artifacts
+
+Each run directory contains:
+
+    evidence.jsonl
+    results.json
+
+- `evidence.jsonl` contains full request/response evidence.
+- `results.json` contains structured execution outcomes.
+
+---
+
+## 🔗 References & Context
+
+The following references provide context for the automation and AI-assisted exploitation claims that ATO intentionally approaches with explicit controls and auditability:
+
+- https://ethiack.com/news/blog/one-click-rce-moltbot
+- https://blog.ethiack.com/blog/introducing-the-hackian-an-ai-agent-that-can-hack
+- https://ethiack.com/research
+- https://ethiack.com/blog
+- https://www.darkreading.com/attacks-breaches
+- https://www.sans.org/blog
+- https://owasp.org/www-project-top-ten/
+- https://www.nist.gov/cyberframework
+- https://www.blackhat.com
+- https://www.acm.org/code-of-ethics
+
+These references are provided for technical grounding and comparison only.
+
+---
+
+## 🚧 Project Status
+
+ATO is under active development.
+
+Current functionality includes:
+- Explicit policy enforcement
+- Global request budgeting and rate limiting
+- Deterministic test orchestration
+- Full evidence capture
+
+---
+
+## 📄 License
+
+MIT License
