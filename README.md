@@ -59,56 +59,49 @@ Adaptive Test Orchestration (ATO) is a policy-governed security testing framewor
 
 ## 📦 Installation
 
+Install ATO from the repository root:
+
     pip install .
 
-Development mode:
+For development and local iteration:
 
     pip install -e .
 
----
-
-## ▶️ Usage
-
-    ato \
-      --base-url https://app.example.com \
-      --policy policies/example_policy.yaml \
-      --run-dir runs/example
-
-Each execution produces:
-- `evidence.jsonl` — request and response evidence
-- `results.json` — structured module execution results
+This installs the `ato` CLI entry point.
 
 ---
 
-## 📜 Policy Model
+## ▶️ Examples
 
-Execution is governed by a policy file defining:
+### Basic execution
 
-- Allowed hosts  
-- Allowed schemes  
-- Allowed HTTP methods  
-- Allowed path prefixes  
-- Maximum total requests  
-- Maximum requests per minute  
-- Execution depth limits  
-- Request timeout values  
+Run ATO against a target using an explicit policy file:
 
-Policy enforcement is applied globally and centrally.
+    ato --base-url https://app.example.com \
+        --policy policies/example_policy.yaml \
+        --run-dir runs/example
 
 ---
 
-## 🧠 Evidence Model
+### Using a custom output directory
 
-For each request, ATO records:
+Store run artifacts in a specific directory:
 
-- UTC timestamp  
-- Executing module name  
-- Request metadata  
-- Response metadata and content snapshot  
-
-These artifacts support audit, verification, and regression testing workflows.
+    ato --base-url https://app.example.com \
+        --policy policies/example_policy.yaml \
+        --run-dir runs/2026-02-01
 
 ---
+
+### Typical run artifacts
+
+Each execution produces the following files in the run directory:
+
+    evidence.jsonl
+    results.json
+
+- `evidence.jsonl` contains request and response evidence
+- `results.json` contains structured module execution results
 
 ## 🚧 Project Status
 
