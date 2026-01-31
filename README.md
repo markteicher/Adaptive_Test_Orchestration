@@ -3,7 +3,7 @@ Adaptive Test Orchestration is a policy-governed system that sequences approved 
 
 
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
-![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)
+![License](https://img.shields.io/badge/license-MIT%202.0-green.svg)
 ![Status](https://img.shields.io/badge/status-active%20development-yellow.svg)
 
 Adaptive Test Orchestration (ATO) is a policy-governed security testing framework designed to coordinate and execute approved security tests in a controlled, auditable, and repeatable manner.
