@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "adaptive-test-orchestration"
+version = "0.1.0"
+description = "Policy-governed, deterministic security test orchestration framework"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+
+authors = [
+  { name = "Adaptive Test Orchestration Project" }
+]
+
+dependencies = [
+  "requests>=2.31.0",
+  "PyYAML>=6.0.1"
+]
+
+[project.scripts]
+ato = "ato.cli:main"
+
+[tool.setuptools]
+packages = ["ato", "ato.modules"]
+
+[tool.setuptools.package-data]
+ato = ["policies/*.yaml"]
