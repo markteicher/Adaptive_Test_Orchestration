@@ -144,7 +144,9 @@ No hidden or runtime-loaded dependencies are used.
 
 ## 📦 Installation
 
-These steps reflect real-world engineering standards and must be followed exactly.
+
+The following steps describe how to prepare an environment and install ATO.
+Some steps verify prerequisites and may already be satisfied depending on your system.
 
 1. **Verify Python version**
 
