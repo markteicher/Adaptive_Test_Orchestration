@@ -1,0 +1,19 @@
+ato/
+  pyproject.toml
+  README.md
+  ato/
+    __init__.py
+    cli.py
+    policy.py
+    evidence.py
+    orchestrator.py
+    http_client.py
+    modules/
+      __init__.py
+      base.py
+      http_basic_probe.py
+      headers_checks.py
+  policies/
+    example_policy.yaml
+  runs/
+    .gitkeep
