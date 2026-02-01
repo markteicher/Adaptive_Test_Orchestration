@@ -213,8 +213,6 @@ Each run produces:
 - Ethiack Research Blog  
   https://ethiack.com/blog
 
-These demonstrations typically assume trusted environments and minimal constraints.  
-ATO evaluates what remains once those assumptions are removed.
 
 ---
 
