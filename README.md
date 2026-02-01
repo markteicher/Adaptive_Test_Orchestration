@@ -79,7 +79,6 @@ If the following remain unchanged:
 - the configuration
 - the target
 
-Then execution behavior remains consistent.
 
 ---
 
