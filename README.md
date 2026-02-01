@@ -1,12 +1,8 @@
 # 🧪 Adaptive Test Orchestration (ATO)
 
-Adaptive Test Orchestration (ATO) is a software system whose purpose is to **verify whether proof-of-concept automated exploitation code actually works when subjected to real, commercial-grade software and security standards**.
+Adaptive Test Orchestration (ATO) is a Python based test harness whose purpose is to **verify whether proof-of-concept automated exploitation code actually works when subjected to real, commercial-grade software and security standards**.
 
 In recent years, multiple demonstrations have claimed that automated tools or “AI agents” can perform complex exploitation with minimal human involvement. These demonstrations often show impressive results in controlled environments. However, they typically depend on assumptions that do not exist in real organizations, such as unrestricted execution, implicit authorization, unlimited retries, permissive networking, and undocumented behavior.
-
-
-It takes existing proof-of-concept automation and forces it to operate under the same rules that real, deployed software must follow.
-
 
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
