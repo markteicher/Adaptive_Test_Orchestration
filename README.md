@@ -4,11 +4,9 @@ Adaptive Test Orchestration (ATO) is a software system whose purpose is to **ver
 
 In recent years, multiple demonstrations have claimed that automated tools or “AI agents” can perform complex exploitation with minimal human involvement. These demonstrations often show impressive results in controlled environments. However, they typically depend on assumptions that do not exist in real organizations, such as unrestricted execution, implicit authorization, unlimited retries, permissive networking, and undocumented behavior.
 
-ATO exists specifically to remove those assumptions.
 
-ATO does not attempt to invent new exploitation techniques or improve attack success rates. Instead, it takes existing proof-of-concept automation and forces it to operate under the same rules that real, deployed software must follow.
+It takes existing proof-of-concept automation and forces it to operate under the same rules that real, deployed software must follow.
 
-**ATO applies commercial QA standards—scope control, bounded execution, reproducibility, and full documentation—to proof-of-concept automated exploitation workflows to determine whether they remain functional under real-world constraints.**
 
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -16,13 +14,10 @@ ATO does not attempt to invent new exploitation techniques or improve attack suc
 
 ---
 
-## 🎯 Purpose and Scope
+## 🎯 Purpose
 
-ATO is used to answer a single, practical question:
+Does this automated workflow still function when it must behave like real software operating inside a real enterprise?
 
-> Does this automated workflow still function when it must behave like real software operating inside a real enterprise?
-
-When automation fails under these conditions, that failure is an expected and meaningful result.
 
 ---
 
@@ -30,12 +25,12 @@ When automation fails under these conditions, that failure is an expected and me
 
 ### 🔒 Commercial Guardrails Applied
 
-ATO applies the same constraints expected of production-grade software.
+Applies constraints expected of production-grade software.
 
 - **Explicit scope**
   - A target base URL must be provided.
   - Execution is limited to that declared target.
-  - The system will not discover or interact with anything outside that scope.
+
 
 - **Bounded execution**
   - A single global request budget limits how much activity can occur in one run.
@@ -52,48 +47,38 @@ ATO applies the same constraints expected of production-grade software.
   - Execution stops on explicit errors.
   - Stop conditions are deliberate and recorded.
 
-These guardrails exist to eliminate hidden assumptions and validate automation under real operational constraints.
 
 ---
 
 ### 🔁 Orchestration and Execution Model
 
-ATO executes approved test modules sequentially.
 
-Each module:
+## Each defined module:
 - receives a constrained execution context
 - performs only its defined behavior
 - returns structured results
 
-The orchestrator:
+## Orchestrator:
 - controls execution order
 - enforces shared limits
 - decides whether execution continues
-
-There is no autonomous branching, speculative behavior, or hidden retry logic.
 
 ---
 
 ### 🧾 Evidence and Observability
 
-ATO records all activity as it occurs.
+Records and Logs all activity.
 
-For every request, the system captures:
+For every request, the test harness captures:
 - the time the request occurred
 - which module issued the request
 - the HTTP method and URL
 - request data when present
 - the full response returned
 
-Evidence is written during execution, not reconstructed later.
-
-This ensures all behavior can be reviewed, audited, and verified.
-
 ---
 
 ### ♻️ Reproducibility
-
-ATO is designed so that the same inputs produce the same behavior.
 
 If the following remain unchanged:
 - the code version
@@ -101,8 +86,6 @@ If the following remain unchanged:
 - the target
 
 Then execution behavior remains consistent.
-
-This allows proof-of-concept automation to be evaluated repeatedly using the same standards applied to production software.
 
 ---
 
@@ -146,28 +129,29 @@ No hidden or runtime-loaded dependencies are used.
 
 
 The following steps describe how to prepare an environment and install ATO.
-Some steps verify prerequisites and may already be satisfied depending on your system.
+Verify all prerequisites depending on the operating system.
 
 1. **Verify Python version**
+from the command line or terminal
 
        python --version
        python3 --version
 
    Python 3.10 or newer is required.
 
-2. **Verify pip**
+3. **Verify pip**
 
        pip --version
 
-3. **Confirm repository root**
+4. **Confirm repository root**
 
        ls pyproject.toml
 
-4. **Create a virtual environment**
+5. **Create a virtual environment**
 
        python -m venv .venv
 
-5. **Activate the environment**
+6. **Activate the environment**
 
    Linux / macOS:
 
@@ -177,19 +161,19 @@ Some steps verify prerequisites and may already be satisfied depending on your s
 
        .venv\Scripts\Activate.ps1
 
-6. **Upgrade packaging tools**
+7. **Upgrade packaging tools**
 
        pip install --upgrade pip setuptools wheel
 
-7. **Install ATO**
+8. **Install ATO**
 
        pip install .
 
-8. **Verify installation**
+9. **Verify installation**
 
        ato --help
 
-9. **Editable install (development use only)**
+10. **Editable install (development use only)**
 
        pip install -e .
        ato --help
@@ -222,9 +206,7 @@ Each run produces:
 
 ---
 
-## 🔗 References and Validation Context
-
-The references below describe the class of proof-of-concept automation ATO is designed to evaluate.
+## 🔗 References
 
 ### 🤖 Automated / AI-Assisted Exploitation
 
@@ -242,7 +224,7 @@ ATO evaluates what remains once those assumptions are removed.
 
 ---
 
-### 🛡️ Security Engineering Context
+### 🛡️ Security Engineering
 
 - OWASP Top Ten  
   https://owasp.org/www-project-top-ten/
@@ -272,10 +254,6 @@ ATO evaluates what remains once those assumptions are removed.
 
 ATO is under active development.
 
-Current focus:
-- applying commercial QA guardrails
-- documenting assumptions explicitly
-- validating proof-of-concept automation behavior
 
 ---
 
